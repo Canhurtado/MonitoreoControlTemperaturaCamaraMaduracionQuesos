@@ -1,0 +1,210 @@
+
+#include <LiquidCrystal.h>   //Libreria pantalla cristal
+LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
+int val;
+int tempPin = 1;
+
+void setup() {
+  lcd.begin(16, 2);
+  Serial.begin (9600);
+  pinMode(tempPin, INPUT);  //Pin de lectura LM32 A1
+  pinMode(7, OUTPUT);      //Pin para el Buzzer
+  pinMode(6, OUTPUT);      //Pin para el Sistema de Enfriamiento (Ventilador)
+  pinMode(5, OUTPUT);      //Pin para el Sistema de Calefacción (LED Naranja)
+
+  //Pines para la señalización lumínica del panel de LEDs
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(14, OUTPUT);
+  pinMode(15, OUTPUT);
+  pinMode(16, OUTPUT);
+  pinMode(17, OUTPUT);
+  pinMode(18, OUTPUT);
+  pinMode(19, OUTPUT);
+  pinMode(20, OUTPUT);
+  pinMode(21, OUTPUT);
+
+}
+void loop() {
+  val = analogRead(tempPin);
+  lcd.setCursor(0, 0);
+
+  float mv = (val / 1024.0) * 5000.0;
+  float temp = mv / 10;
+  lcd.print("TEMP: ");
+  lcd.print(temp);
+  lcd.print(" C");
+
+  //******SISTEMAS DE ALERTAS******
+
+  //SISTEMA DE ENFRIAMIENTO
+  if (temp >= 34.00) {
+    lcd.setCursor(0, 1);
+    lcd.print("TEMP CRITICA");
+    digitalWrite(5, LOW);
+    digitalWrite(6, HIGH);
+    digitalWrite(7, HIGH);
+    delay(500);
+    digitalWrite(7, LOW);
+   delay(500);
+    lcd.clear();
+  }
+  //SISTEMA DE ALERTA DE TEMPERATURA ALTA
+  else if (temp >= 28.00 && temp <= 33.99) {
+    lcd.setCursor(0, 1);
+    lcd.print("TEMP ALTA");
+    digitalWrite(5, LOW);
+    digitalWrite(6, LOW);
+    digitalWrite(7, HIGH);
+    delay(1000);
+    digitalWrite(7, LOW);
+    delay(1000);
+    lcd.clear();
+  }
+  //TEMPERATURA NORMAL
+  else if (temp >= 16.00 && temp <= 27.99) {
+    lcd.setCursor(0, 1);
+    lcd.print("TEMP NORMAL");
+    digitalWrite(5, LOW);
+    digitalWrite(6, LOW);
+    digitalWrite(7, LOW);
+    delay(100);
+    lcd.clear();
+  }
+  //SISTEMA DE CALENTAMIENTO
+  else if (temp <= 17.99) {
+    lcd.setCursor(0, 1);
+    lcd.print("TEMP BAJA");
+    digitalWrite(5, HIGH);
+    digitalWrite(6, LOW);
+    digitalWrite(7, HIGH);
+    delay(1000);
+    digitalWrite(7, LOW);
+    delay(1000);
+    lcd.clear();
+  }
+
+  //******SISTEMAS DEL PANEL DE SEÑALIZACION LUMÍNICA******
+  if (temp <= 13.00) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(14, LOW);
+    digitalWrite(15, LOW);
+    digitalWrite(16, LOW);
+    digitalWrite(17, LOW);
+    digitalWrite(18, LOW);
+    digitalWrite(19, LOW);
+    digitalWrite(20, LOW);
+    digitalWrite(21, HIGH);
+  }
+
+  else if (temp <= 16.00) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(14, LOW);
+    digitalWrite(15, LOW);
+    digitalWrite(16, LOW);
+    digitalWrite(17, LOW);
+    digitalWrite(18, LOW);
+    digitalWrite(19, LOW);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+  else if (temp <= 19.00) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(14, LOW);
+    digitalWrite(15, LOW);
+    digitalWrite(16, LOW);
+    digitalWrite(17, LOW);
+    digitalWrite(18, LOW);
+    digitalWrite(19, HIGH);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+  else if (temp <= 22.00) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(14, LOW);
+    digitalWrite(15, LOW);
+    digitalWrite(16, LOW);
+    digitalWrite(17, LOW);
+    digitalWrite(18, HIGH);
+    digitalWrite(19, HIGH);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+  else if (temp <= 25.00) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(14, LOW);
+    digitalWrite(15, LOW);
+    digitalWrite(16, LOW);
+    digitalWrite(17, HIGH);
+    digitalWrite(18, HIGH);
+    digitalWrite(19, HIGH);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+  else if (temp <= 28.00) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(14, LOW);
+    digitalWrite(15, LOW);
+    digitalWrite(16, HIGH);
+    digitalWrite(17, HIGH);
+    digitalWrite(18, HIGH);
+    digitalWrite(19, HIGH);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+  else if (temp <= 31.00) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(14, LOW);
+    digitalWrite(15, HIGH);
+    digitalWrite(16, HIGH);
+    digitalWrite(17, HIGH);
+    digitalWrite(18, HIGH);
+    digitalWrite(19, HIGH);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+  else if (temp <= 34.00) {
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(14, HIGH);
+    digitalWrite(15, HIGH);
+    digitalWrite(16, HIGH);
+    digitalWrite(17, HIGH);
+    digitalWrite(18, HIGH);
+    digitalWrite(19, HIGH);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+  else if (temp <= 37.00) {
+    digitalWrite(3, LOW);
+    digitalWrite(2, HIGH);
+    digitalWrite(14, HIGH);
+    digitalWrite(15, HIGH);
+    digitalWrite(16, HIGH);
+    digitalWrite(17, HIGH);
+    digitalWrite(18, HIGH);
+    digitalWrite(19, HIGH);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+  else if (temp > 37.00) {
+    digitalWrite(2, HIGH);
+    digitalWrite(3, HIGH);
+    digitalWrite(14, HIGH);
+    digitalWrite(15, HIGH);
+    digitalWrite(16, HIGH);
+    digitalWrite(17, HIGH);
+    digitalWrite(18, HIGH);
+    digitalWrite(19, HIGH);
+    digitalWrite(20, HIGH);
+    digitalWrite(21, HIGH);
+  }
+
+}
